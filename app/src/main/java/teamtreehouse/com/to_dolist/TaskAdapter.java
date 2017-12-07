@@ -128,15 +128,15 @@ class TaskAdapter extends RecyclerView.Adapter<TaskAdapter.ViewHolder> implement
                 db.taskDao().delete(task);
                 tasks.remove(taskPosition);
 
-                view.animate()
+                /*view.animate()
                         .scaleX(0).scaleY(0).setDuration(700)
                         .withEndAction(new Runnable() {
                             @Override
-                            public void run() {
+                            public void run() {*/
                                 notifyDataSetChanged();
-                            }
+                     /*       }
                         })
-                        .start();
+                        .start();*/
 
             }
         }
