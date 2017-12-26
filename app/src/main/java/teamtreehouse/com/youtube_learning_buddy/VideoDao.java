@@ -13,11 +13,11 @@ import java.util.List;
 @Dao
 public interface VideoDao {
 
-    @Query("SELECT * FROM Video ORDER BY categoryOrder ASC")
-    List<Category> getAllVideos();
+    @Query("SELECT * FROM Video ORDER BY videoOrder ASC")
+    List<Video> getAllVideos();
 
     @Query("SELECT * FROM Video WHERE id LIKE :id ")
-    Category getVideo(int id);
+    Video getVideo(int id);
 
     @Insert
     void insertAll(Video... videos);

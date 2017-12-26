@@ -34,16 +34,16 @@ public class Video {
         this.id = id;
     }
 
-    public Video(String videoName, int categoryOrder) {
+    public Video(String videoName, int videoOrder) {
         this.videoName = videoName;
-        this.videoOrder = categoryOrder;
+        this.videoOrder = videoOrder;
     }
 
     public int getVideoOrder() {
         return videoOrder;
     }
 
-    public void setVideoOrder(int categoryOrder) {
+    public void setVideoOrder(int videoOrder) {
         this.videoOrder = videoOrder;
     }
 
