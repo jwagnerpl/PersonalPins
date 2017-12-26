@@ -1,8 +1,7 @@
-package teamtreehouse.com.to_dolist;
+package teamtreehouse.com.youtube_learning_buddy;
 
 import android.arch.persistence.room.Room;
 import android.content.Intent;
-import android.nfc.Tag;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -15,19 +14,19 @@ import android.widget.EditText;
 
 import java.util.ArrayList;
 
-public class CreateTask extends AppCompatActivity {
+public class CreateCategory extends AppCompatActivity {
 
-    private static final String TAG = "CreateTask";
-    EditText taskName;
+    private static final String TAG = "CreateCategory";
+    EditText categoryName;
     private Button button;
-    public ArrayList<Task> taskList1 = new ArrayList<>();
+    public ArrayList<Category> categoryList1 = new ArrayList<>();
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_task);
+        setContentView(R.layout.create_category);
 
-        taskName = findViewById(R.id.task_name);
+        categoryName = findViewById(R.id.category_name);
         button = findViewById(R.id.button);
 
 
@@ -45,11 +44,11 @@ public class CreateTask extends AppCompatActivity {
                         .withEndAction(new Runnable() {
                             @Override
                             public void run() {
-                                int dbSize = db.taskDao().getAllTasks().size();
+                                int dbSize = db.categoryDao().getAllCategories().size();
                                 Log.d(TAG, String.valueOf(dbSize));
-                                Task task = new Task(taskName.getText().toString(), dbSize + 1);
-                                db.taskDao().insertAll(task);
-                                startActivity(new Intent(CreateTask.this, MainActivity.class));
+                                Category category = new Category(categoryName.getText().toString(), dbSize + 1);
+                                db.categoryDao().insertAll(category);
+                                startActivity(new Intent(CreateCategory.this, MainActivity.class));
                             }
                         })
                         .start();

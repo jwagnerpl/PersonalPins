@@ -1,9 +1,7 @@
-package teamtreehouse.com.to_dolist.ItemTouchHelper;
+package teamtreehouse.com.youtube_learning_buddy.ItemTouchHelper;
 
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-
-import teamtreehouse.com.to_dolist.ItemTouchHelper.ItemTouchHelperAdapter;
 
 public class ItemTouchHelperCallback extends ItemTouchHelper.Callback {
 

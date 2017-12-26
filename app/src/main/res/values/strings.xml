@@ -1,6 +1,8 @@
 <resources>
-    <string name="app_name">To-Do List</string>
-    <string name="task_id"></string>
+    <string name="app_name">Youtube Learning Buddy</string>
+    <string name="category_id"></string>
     <string name="position"></string>
     <string name="action_settings">Settings</string>
+    <string name="category_name">Category Name</string>
+    <string name="save_category">Save Category</string>
 </resources>

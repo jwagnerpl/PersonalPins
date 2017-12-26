@@ -11,10 +11,10 @@
         android:layout_height="wrap_content" >
 
     <android.support.design.widget.TextInputEditText
-        android:id="@+id/task_name"
+        android:id="@+id/category_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Task Name"
+        android:hint="@string/category_name"
         />
 
     </android.support.design.widget.TextInputLayout>
@@ -23,7 +23,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/button"
-        android:text="Save Task"
+        android:text="@string/save_category"
         />
 
 </LinearLayout>
