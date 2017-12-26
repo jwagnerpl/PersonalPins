@@ -5,4 +5,6 @@
     <string name="action_settings">Settings</string>
     <string name="category_name">Category Name</string>
     <string name="save_category">Save Category</string>
+    <string name="search_for_a_video">Search for a title</string>
+    <string name="search_button_text">Search</string>
 </resources>

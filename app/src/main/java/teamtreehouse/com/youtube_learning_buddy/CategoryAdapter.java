@@ -14,11 +14,13 @@ import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;
 
+import rx.subjects.PublishSubject;
 import teamtreehouse.com.youtube_learning_buddy.ItemTouchHelper.ItemTouchHelperAdapter;
 
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements ItemTouchHelperAdapter, View.OnLongClickListener {
 
     List<Category> categories;
+    private final PublishSubject<String> onClickSubject = PublishSubject.create();
 
     private static final String TAG = "CategoryAdapter";
     final AppDatabase db = Room.databaseBuilder(MainActivity.context, AppDatabase.class, "production")
