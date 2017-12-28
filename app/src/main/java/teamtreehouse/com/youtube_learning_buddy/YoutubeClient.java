@@ -1,12 +1,7 @@
 package teamtreehouse.com.youtube_learning_buddy;
-
-import android.media.Image;
-
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
+import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
