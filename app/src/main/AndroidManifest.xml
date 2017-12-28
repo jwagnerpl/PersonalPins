@@ -24,6 +24,7 @@
         </activity>
         <activity android:name=".CreateCategory" />
         <activity android:name=".SearchVideos" />
+        <activity android:name=".CategoryActivity"></activity>
     </application>
 
 </manifest>

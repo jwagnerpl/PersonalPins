@@ -1,6 +1,8 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
 import android.arch.persistence.room.Room;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -9,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.Collections;
@@ -19,13 +22,15 @@ import teamtreehouse.com.youtube_learning_buddy.ItemTouchHelper.ItemTouchHelperA
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements ItemTouchHelperAdapter, View.OnLongClickListener {
 
     List<Category> categories;
+    LinearLayout row;
+    Context context;
 
     private static final String TAG = "CategoryAdapter";
     final AppDatabase db = Room.databaseBuilder(MainActivity.context, AppDatabase.class, "production")
             .allowMainThreadQueries().fallbackToDestructiveMigration()
             .build();
 
-    public CategoryAdapter(List<Category> categories) {
+    public CategoryAdapter(List<Category> categories, Context context) {
         this.categories = categories;
     }
 
@@ -75,6 +80,16 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
         int categoryId = categories.get(position).getId();
         holder.imageButton.setTag(R.string.category_id, categoryId);
         holder.imageButton.setTag(R.string.position, position);
+
+        row.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d(TAG, "hello there is it working");
+                Intent intent = new Intent(context, CategoryActivity.class);
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override
@@ -95,6 +110,7 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
 
         public ViewHolder(View itemView) {
             super(itemView);
+            row = itemView.findViewById(R.id.row);
             categoryName = itemView.findViewById(R.id.category_name);
             categoryId = itemView.findViewById(R.id.category_id);
             imageButton = itemView.findViewById(R.id.delete);

@@ -41,12 +41,8 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        ArrayList<String> list = new ArrayList<>();
-        list.add("hello");
-        list.add("bob");
-        list.add("you");
-        list.add("are");
-
+        YoutubeApiCall api = new YoutubeApiCall();
+        api.youtubeSearch("funny stuff");
 
 
         context = getApplicationContext();
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<Category> categories = db.categoryDao().getAllCategories();
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mAdapter = new CategoryAdapter(categories);
+        mAdapter = new CategoryAdapter(categories,MainActivity.this);
         ItemTouchHelperAdapter adapter;
         ItemTouchHelper.Callback callback = new ItemTouchHelperCallback((ItemTouchHelperAdapter) mAdapter);
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
