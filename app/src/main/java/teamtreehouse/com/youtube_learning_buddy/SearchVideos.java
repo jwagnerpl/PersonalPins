@@ -1,5 +1,6 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
+import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -22,8 +23,11 @@ public class SearchVideos extends AppCompatActivity {
     RecyclerView recyclerView;
     ArrayList<YoutubeVideo> videos;
     private static final String TAG = "SearchVideos";
-    ProgressBar progressBar;
+    public static ProgressBar progressBar;
     Utils utils = new Utils();
+    public static FragmentManager manager;
+    public static CommentFragment commentFragment;
+
 
 
     @Override
@@ -32,10 +36,17 @@ public class SearchVideos extends AppCompatActivity {
         setContentView(R.layout.activity_search_videos);
         progressBar = findViewById(R.id.searchProgressBar);
 
+
+        manager = getFragmentManager();
+        commentFragment = new CommentFragment();
+
+
         searchSubmitButton = findViewById(R.id.searchButton);
         searchQuery = findViewById(R.id.searchInput);
         recyclerView = findViewById(R.id.searchResultsRecyclerView);
         final Context context = SearchVideos.this;
+
+        //new YoutubeApiCall().getComments(SearchVideos.this, "puyiZKvxBa0", progressBar, commentFragment, manager);
 
         searchSubmitButton.setOnClickListener(new View.OnClickListener() {
             @Override

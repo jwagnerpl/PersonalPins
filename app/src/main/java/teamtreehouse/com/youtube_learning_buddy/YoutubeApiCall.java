@@ -1,5 +1,7 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
+import android.app.Fragment;
+import android.app.FragmentManager;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,7 +20,7 @@ import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class YoutubeApiCall {
+public class YoutubeApiCall extends Fragment {
     private static final String TAG = "YoutubeApiCall";
 
     public ArrayList<YoutubeVideo> youtubeSearch(final Context context, String query, final RecyclerView recyclerView, final ProgressBar pb) {
@@ -41,9 +43,10 @@ public class YoutubeApiCall {
                 for (Item item : items) {
                     String description = item.getSnippet().getDescription();
                     String title = item.getSnippet().getTitle();
+                    String id = item.getId().getVideoId() + "";
                     String url = "https://youtube.com/watch?v=" + item.getId().getVideoId();
                     Log.d(TAG, description + title + url);
-                    videoList.add(new YoutubeVideo(url, title, description));
+                    videoList.add(new YoutubeVideo(url, title, description, id));
                 }
             }
 
@@ -54,10 +57,10 @@ public class YoutubeApiCall {
 
             @Override
             public void onComplete() {
-                YoutubeVideoAdapter mAdapter = new YoutubeVideoAdapter(videoList,context);
+                YoutubeVideoAdapter mAdapter = new YoutubeVideoAdapter(videoList, context);
                 recyclerView.setAdapter(mAdapter);
                 mAdapter.notifyDataSetChanged();
-                pb.setVisibility(View.INVISIBLE);
+                pb.setVisibility(View.GONE);
             }
         };
 
@@ -65,10 +68,6 @@ public class YoutubeApiCall {
                 .baseUrl(YoutubeClient.YOUTUBE_BASE_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
-
-//        Retrofit.Builder builder = new Retrofit.Builder()
-//                .baseUrl(YoutubeClient.YOUTUBE_BASE_URL)
-//                .addConverterFactory(GsonConverterFactory.create());
 
         Retrofit retrofit = builder.build();
 
@@ -78,27 +77,65 @@ public class YoutubeApiCall {
         call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
 
 
-//        call.enqueue(new Callback<YoutubeVideoData>() {
-//            @Override
-//            public void onResponse(Call<YoutubeVideoData> call, Response<YoutubeVideoData> response) {
-//
-//                YoutubeVideoData ytv = response.body();
-//
-//                ArrayList<Item> items = ytv.getItems();
-//                for (Item item : items) {
-//                    String description = item.getSnippet().getDescription();
-//                    String title = item.getSnippet().getTitle();
-//                    String url = "https://youtube.com/watch?v=" + item.getId().getVideoId();
-//                    videoList.add(new YoutubeVideo(url,title,description));
-//                    Log.d(TAG, description + " " + url + " " + title);
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<YoutubeVideoData> call, Throwable t) {
-//                Log.d(TAG, "something went wrong " + t);
-//            }
-//        });
         return videoList;
     }
+
+    public ArrayList<TopLevelCommentSnippet> getComments(final Context context, String videoId, final ProgressBar pb, final CommentFragment commentFragment, final FragmentManager fragmentManager) {
+
+        pb.setVisibility(View.VISIBLE);
+
+        final ArrayList<TopLevelCommentSnippet> commentList = new ArrayList<>();
+
+        Observer observer = new Observer() {
+            @Override
+            public void onSubscribe(Disposable d) {
+                Log.d(TAG, "subscribed");
+            }
+
+            @Override
+            public void onNext(Object value) {
+                Log.d(TAG, "Iterating");
+                YoutubeCommentData ytc = (YoutubeCommentData) value;
+                Log.d(TAG, value.toString());
+                Log.d(TAG, ytc.getKind());
+                ArrayList<CommentItems> items = ytc.getCommentItems();
+                for (CommentItems item : items) {
+                    String author = item.getCommentSnippet().getTopLevelComment().getTopLevelCommentSnippet().getAuthorDisplayName();
+                    String commentText = item.getCommentSnippet().getTopLevelComment().getTopLevelCommentSnippet().getTextOriginal();
+                    Log.d(TAG, author + commentText);
+                    commentList.add(new TopLevelCommentSnippet(author, commentText));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d(TAG, "there was an error " + e);
+            }
+
+            @Override
+            public void onComplete() {
+                commentFragment.show(fragmentManager, "Hello");
+                pb.setVisibility(View.GONE);
+                Log.d(TAG, "completed");
+            }
+        };
+
+        Retrofit.Builder builder = new Retrofit.Builder()
+                .baseUrl(YoutubeClient.YOUTUBE_COMMENT_URL)
+                .addConverterFactory(GsonConverterFactory.create())
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create());
+
+        Retrofit retrofit = builder.build();
+
+        YoutubeClient ytc = retrofit.create(YoutubeClient.class);
+        Observable<YoutubeCommentData> call = ytc.returnComments(videoId);
+
+        call.subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(observer);
+
+
+        return commentList;
+    }
+
 }
+
+

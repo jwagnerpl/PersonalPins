@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ellipsize="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/videoRow"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/videoRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@color/colorAccent"
     android:orientation="vertical">
 
     <TextView
@@ -24,37 +25,44 @@
 
     <LinearLayout
         android:id="@+id/videorow2"
-        android:baselineAligned="false"
-        android:layout_margin="5dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_margin="5dp"
         android:orientation="horizontal"
-        android:layout_gravity="fill"
-        android:weightSum="2">
+        android:weightSum="3">
 
         <TextView
-
             android:id="@+id/video_name"
             android:layout_width="match_parent"
-            android:ellipsize="end"
-            android:maxLines="2"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:padding="12dp"
+            android:ellipsize="marquee"
+            android:maxLines="2"
+            android:textAlignment="center"
             android:textSize="20sp"
             tools:text="Sample Category" />
 
         <TextView
             android:id="@+id/video_description"
-            android:layout_gravity="fill"
-            android:ellipsize="end"
-            android:maxLines="4"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
             android:layout_weight="1"
-            android:padding="12dp"
+            android:ellipsize="marquee"
+            android:maxLines="4"
+            android:textAlignment="center"
             android:textSize="14sp"
             tools:text="Sample Category" />
+
+        <Button
+            android:id="@+id/viewCommentsButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_weight="1"
+            android:text="View Comments"
+            android:textAlignment="center" />
 
     </LinearLayout>
 

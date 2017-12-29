@@ -18,10 +18,13 @@ public class YoutubeVideo {
     @ColumnInfo(name = "categoryFk")
     String categoryFk;
 
-    public YoutubeVideo(String url, String title, String description) {
+    String videoId;
+
+    public YoutubeVideo(String url, String title, String description, String videoId) {
         this.url = url;
         this.title = title;
         this.description = description;
+        this.videoId = videoId;
     }
 
     public String getUrl() {
@@ -62,5 +65,13 @@ public class YoutubeVideo {
 
     public void setCategoryFk(String categoryFk) {
         this.categoryFk = categoryFk;
+    }
+
+    public String getVideoId() {
+        return videoId;
+    }
+
+    public void setVideoId(String videoId) {
+        this.videoId = videoId;
     }
 }

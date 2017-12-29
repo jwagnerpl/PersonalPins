@@ -11,8 +11,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -27,8 +29,8 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
     LinearLayout row;
     Context context;
     MyClickListenerInterface myClickListenerInterface;
-    private int selectedPos = -10;
     private int row_index = -1;
+    ProgressBar pb;
 
 
     private static final String TAG = "CategoryAdapter";
@@ -59,7 +61,6 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
     }
 
 
-
     @Override
     public YoutubeVideoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_row, parent, false);
@@ -68,15 +69,19 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
 
     @Override
     public void onBindViewHolder(final YoutubeVideoAdapter.ViewHolder holder, final int position) {
-//        holder.categoryName.setText(categories.get(position).getCategoryName());
-//        Log.d(TAG, categories.get(position).getCategoryOrder() + "");
-//        int categoryId = categories.get(position).getId();
-//        holder.imageButton.setTag(R.string.category_id, categoryId);
-//        holder.imageButton.setTag(R.string.position, position);
+
         int selectedColor = context.getResources().getColor(R.color.selected);
-        holder.itemView.setSelected(selectedPos == position);
         holder.videoName.setText(videos.get(position).getTitle());
         holder.videoDescription.setText(videos.get(position).getDescription());
+        Log.d(TAG, "video id is " + videos.get(position).getVideoId());
+        holder.commentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new YoutubeApiCall().getComments(context, videos.get(position).getVideoId(), SearchVideos.progressBar, SearchVideos.commentFragment, SearchVideos.manager);
+            }
+        });
+
+
         holder.videoRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -85,12 +90,12 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
             }
         });
 
-        if(row_index == position){
+        if (row_index == position) {
             Log.d(TAG, row_index + "");
             Log.d(TAG, position + "");
-            holder.videoRow.setBackgroundColor(selectedColor);
-        }
-        else{
+            holder.videoRow.setBackgroundColor(Color.parseColor("#aaafff"));
+
+        } else {
             holder.videoRow.setBackgroundColor(Color.parseColor("#ffffff"));
         }
 
@@ -113,6 +118,8 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
         public TextView videoUrl;
         public TextView videoId;
         public LinearLayout videoRow;
+        public Button commentButton;
+
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -123,6 +130,8 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
             videoUrl = itemView.findViewById(R.id.video_url);
             //videoName.setOnClickListener(this);
             videoRow = itemView.findViewById(R.id.videorow2);
+            commentButton = itemView.findViewById(R.id.viewCommentsButton);
+
 
         }
 
@@ -130,10 +139,6 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View view) {
-
-            notifyItemChanged(selectedPos);
-            selectedPos = getLayoutPosition();
-            notifyItemChanged(selectedPos);
 
         }
 
