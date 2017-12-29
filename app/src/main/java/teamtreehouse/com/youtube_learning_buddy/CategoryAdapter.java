@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +23,7 @@ import teamtreehouse.com.youtube_learning_buddy.ItemTouchHelper.ItemTouchHelperA
 class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> implements ItemTouchHelperAdapter, View.OnLongClickListener {
 
     List<Category> categories;
+    List<YoutubeVideo> videos;
     LinearLayout row;
     Context context;
 
@@ -32,6 +34,18 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
 
     public CategoryAdapter(List<Category> categories, Context context) {
         this.categories = categories;
+        this.context = context;
+    }
+
+    public CategoryAdapter(){
+    }
+
+    public List<YoutubeVideo> getVideos() {
+        return videos;
+    }
+
+    public void setVideos(List<YoutubeVideo> videos) {
+        this.videos = videos;
     }
 
     @Override
@@ -80,16 +94,6 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
         int categoryId = categories.get(position).getId();
         holder.imageButton.setTag(R.string.category_id, categoryId);
         holder.imageButton.setTag(R.string.position, position);
-
-        row.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d(TAG, "hello there is it working");
-                Intent intent = new Intent(context, CategoryActivity.class);
-                context.startActivity(intent);
-            }
-        });
-
     }
 
     @Override
@@ -122,6 +126,11 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
         @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View view) {
+
+            if (view == categoryName) {
+                Log.d(TAG, view.toString());
+                context.startActivity(new Intent(context, CategoryActivity.class));
+            }
 
             if (view == imageButton) {
 

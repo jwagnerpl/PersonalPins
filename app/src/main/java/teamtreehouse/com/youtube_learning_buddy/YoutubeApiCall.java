@@ -1,6 +1,10 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
+import android.content.Context;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -17,7 +21,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class YoutubeApiCall {
     private static final String TAG = "YoutubeApiCall";
 
-    public ArrayList<YoutubeVideo> youtubeSearch(String query) {
+    public ArrayList<YoutubeVideo> youtubeSearch(final Context context, String query, final RecyclerView recyclerView, final ProgressBar pb) {
+
+        pb.setVisibility(View.VISIBLE);
 
         final ArrayList<YoutubeVideo> videoList = new ArrayList<>();
 
@@ -36,6 +42,7 @@ public class YoutubeApiCall {
                     String description = item.getSnippet().getDescription();
                     String title = item.getSnippet().getTitle();
                     String url = "https://youtube.com/watch?v=" + item.getId().getVideoId();
+                    Log.d(TAG, description + title + url);
                     videoList.add(new YoutubeVideo(url, title, description));
                 }
             }
@@ -47,7 +54,10 @@ public class YoutubeApiCall {
 
             @Override
             public void onComplete() {
-
+                YoutubeVideoAdapter mAdapter = new YoutubeVideoAdapter(videoList,context);
+                recyclerView.setAdapter(mAdapter);
+                mAdapter.notifyDataSetChanged();
+                pb.setVisibility(View.INVISIBLE);
             }
         };
 

@@ -30,9 +30,6 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
     FloatingActionButton fab;
     private RecyclerView.Adapter mAdapter;
-//    ArrayList<Category> categories;
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         YoutubeApiCall api = new YoutubeApiCall();
-        api.youtubeSearch("funny stuff");
 
 
         context = getApplicationContext();
@@ -95,4 +91,5 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
+
 }

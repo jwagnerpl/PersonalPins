@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ellipsize="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/videoRow"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/video_id"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone" />
+
+    <TextView
+        android:id="@+id/video_url"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="12dp"
+        android:textSize="24sp"
+        android:visibility="gone"
+        tools:text="Sample Category" />
+
+    <LinearLayout
+        android:id="@+id/videorow2"
+        android:baselineAligned="false"
+        android:layout_margin="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="fill"
+        android:weightSum="2">
+
+        <TextView
+
+            android:id="@+id/video_name"
+            android:layout_width="match_parent"
+            android:ellipsize="end"
+            android:maxLines="2"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:textSize="20sp"
+            tools:text="Sample Category" />
+
+        <TextView
+            android:id="@+id/video_description"
+            android:layout_gravity="fill"
+            android:ellipsize="end"
+            android:maxLines="4"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:padding="12dp"
+            android:textSize="14sp"
+            tools:text="Sample Category" />
+
+    </LinearLayout>
+
+</LinearLayout>

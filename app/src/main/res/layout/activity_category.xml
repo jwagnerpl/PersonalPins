@@ -6,4 +6,20 @@
     android:layout_height="match_parent"
     tools:context="teamtreehouse.com.youtube_learning_buddy.CategoryActivity">
 
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/categoryRecycler">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="parent"
+        android:layout_margin="15dp"
+        android:id="@+id/categoryFab"
+        />
+
 </android.support.constraint.ConstraintLayout>
