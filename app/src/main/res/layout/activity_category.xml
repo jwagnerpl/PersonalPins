@@ -4,23 +4,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="teamtreehouse.com.youtube_learning_buddy.CategoryActivity">
+    tools:context="teamtreehouse.com.youtube_learning_buddy.UI.CategoryActivity">
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/categoryRecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/categoryRecycler">
+        android:layout_height="match_parent">
 
     </android.support.v7.widget.RecyclerView>
 
     <android.support.design.widget.FloatingActionButton
+        android:id="@+id/categoryFab"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="parent"
         android:layout_margin="15dp"
-        android:id="@+id/categoryFab"
+        android:tint="@color/white"
         android:src="@drawable/ic_playlist_add_black_24dp"
-        />
+        app:layout_constraintBottom_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </android.support.constraint.ConstraintLayout>

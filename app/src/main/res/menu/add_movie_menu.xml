@@ -5,7 +5,7 @@
     <item
         android:id="@+id/addMovieMenuIcon"
         android:icon="@drawable/ic_playlist_add_black_24dp"
-        android:iconTint="@android:color/background_light"
+        android:iconTint="@android:color/white"
         android:title="Item"
         app:showAsAction="always" />
 </menu>
