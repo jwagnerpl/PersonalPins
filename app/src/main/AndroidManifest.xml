@@ -22,13 +22,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".CreateCategory"
-            />
-        <activity android:name=".SearchVideosActivity"
-            android:parentActivityName=".CategoryActivity"/>
-        <activity android:name=".CategoryActivity"
+        <activity android:name=".CreateCategory" />
+        <activity
+            android:name=".SearchVideosActivity"
+            android:parentActivityName=".MainActivity" />
+        <activity
+            android:name=".CategoryActivity"
             android:parentActivityName=".MainActivity">
         </activity>
     </application>
-
 </manifest>

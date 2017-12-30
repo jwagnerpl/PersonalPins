@@ -47,6 +47,10 @@ public class SearchVideosActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch(item.getItemId()){
+            case R.id.addMovieMenuIcon:
+
         if(selectedVideo == null){
             Toast.makeText(SearchVideosActivity.this,"Sorry, please select a video", Toast.LENGTH_LONG).show();
         }
@@ -54,13 +58,17 @@ public class SearchVideosActivity extends AppCompatActivity {
             AppDatabase db = new Utils().createDatabase(SearchVideosActivity.this);
             selectedVideo.setCategoryFk(categoryId);
             db.youtubeVideoDao().insertAll(selectedVideo);
-            Log.d(TAG, selectedVideo.toString());
+            selectedVideo = null;
             Intent intent = new Intent(SearchVideosActivity.this, CategoryActivity.class);
             intent.putExtra("CATEGORY_NAME", categoryName);
             startActivity(intent);
+            finish();
+        }
+        return true;
         }
 
-            return true;
+
+        return super.onOptionsItemSelected(item);
 
     }
 
@@ -71,6 +79,7 @@ public class SearchVideosActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.searchProgressBar);
         categoryName = getIntent().getStringExtra("CATEGORY_NAME");
         categoryId = getIntent().getStringExtra("CATEGORY_ID");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         manager = getFragmentManager();
         commentFragment = new CommentFragment();

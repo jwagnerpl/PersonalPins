@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="teamtreehouse.com.youtube_learning_buddy.teamtreehouse.com.youtube_learning_buddy.MainActivity">
     <item
+        android:id="@+id/addMovieMenuIcon"
         android:icon="@drawable/ic_playlist_add_black_24dp"
         android:iconTint="@android:color/background_light"
         android:title="Item"
