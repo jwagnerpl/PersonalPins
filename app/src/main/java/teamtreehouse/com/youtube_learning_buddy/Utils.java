@@ -1,5 +1,6 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
+import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -15,6 +16,14 @@ public class Utils extends AppCompatActivity {
             inputManager.hideSoftInputFromWindow(view.getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
+    }
+
+    public AppDatabase createDatabase(Context context) {
+        final AppDatabase db = Room.databaseBuilder(context, AppDatabase.class, "production")
+                .allowMainThreadQueries()
+                .fallbackToDestructiveMigration()
+                .build();
+        return db;
     }
 
 }

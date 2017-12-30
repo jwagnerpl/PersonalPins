@@ -129,7 +129,9 @@ class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHolder> i
 
             if (view == categoryName) {
                 Log.d(TAG, view.toString());
-                context.startActivity(new Intent(context, CategoryActivity.class));
+                Intent intent = new Intent(context, CategoryActivity.class);
+                intent.putExtra("CATEGORY_NAME",categoryName.getText().toString());
+                context.startActivity(intent);
             }
 
             if (view == imageButton) {

@@ -1,5 +1,7 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
@@ -7,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 
@@ -114,7 +117,24 @@ public class YoutubeApiCall extends Fragment {
 
             @Override
             public void onComplete() {
-                commentFragment.show(fragmentManager, "Hello");
+                String commentString = "";
+                for(TopLevelCommentSnippet comment: commentList){
+                    commentString = commentString + comment.authorDisplayName + " - " + comment.textOriginal + "\n\n";
+                }
+                //commentFragment
+//                Dialog dialog = new Dialog(context);
+//                dialog.setTitle("Comments");
+//                dialog.setContentView(R.layout.dialoglayout);
+//                TextView text = dialog.findViewById(R.id.dialogText);
+//                text.setText("dialog here");
+//                dialog.setPositiveButton
+//                dialog.show();
+                AlertDialog.Builder ad = new AlertDialog.Builder(context);
+                ad.setTitle("Comments");
+                ad.setMessage(commentString);
+                ad.setPositiveButton("OK", null);
+                ad.show();
+                        //show(fragmentManager, "Hello");
                 pb.setVisibility(View.GONE);
                 Log.d(TAG, "completed");
             }

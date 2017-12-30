@@ -75,17 +75,8 @@ public class MainActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
-                view.setScaleX(2);
-                view.setScaleY(2);
-                view.animate()
-                        .scaleX(0).scaleY(0).setDuration(750)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                startActivity(new Intent(MainActivity.this, CreateCategory.class));
-                            }
-                        })
-                        .start();
+                Intent intent = new Intent(MainActivity.this, CreateCategory.class);
+                                startActivity(intent);
 
             }
         });

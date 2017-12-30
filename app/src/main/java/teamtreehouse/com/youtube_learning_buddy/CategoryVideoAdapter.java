@@ -1,14 +1,18 @@
 package teamtreehouse.com.youtube_learning_buddy;
 
 import android.arch.persistence.room.Room;
+import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -16,9 +20,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.net.URI;
 import java.util.List;
 
-class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewHolder> /*implements ItemTouchHelperAdapter, View.OnLongClickListener*/ {
+class CategoryVideoAdapter extends RecyclerView.Adapter<CategoryVideoAdapter.ViewHolder> /*implements ItemTouchHelperAdapter, View.OnLongClickListener*/ {
 
     List<YoutubeVideo> videos;
     LinearLayout row;
@@ -34,7 +39,7 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
             .build();
 
 
-    public YoutubeVideoAdapter(List<YoutubeVideo> videos, Context context) {
+    public CategoryVideoAdapter(List<YoutubeVideo> videos, Context context) {
         this.videos = videos;
         this.context = context;
     }
@@ -57,31 +62,30 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
 
 
     @Override
-    public YoutubeVideoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_row, parent, false);
+    public CategoryVideoAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.video_category_row, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final YoutubeVideoAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final CategoryVideoAdapter.ViewHolder holder, final int position) {
 
         int selectedColor = context.getResources().getColor(R.color.selected);
         holder.videoName.setText(videos.get(position).getTitle());
         holder.videoDescription.setText(videos.get(position).getDescription());
-        holder.commentButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new YoutubeApiCall().getComments(context, videos.get(position).getVideoId(), SearchVideosActivity.progressBar, SearchVideosActivity.commentFragment, SearchVideosActivity.manager);
-            }
-        });
 
 
         holder.videoRow.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 row_index = position;
-                notifyDataSetChanged();
+                Log.d(TAG,"rowclickreg");
+//                notifyDataSetChanged();
+                String url = videos.get(position).getUrl();
                 SearchVideosActivity.selectedVideo = videos.get(position);
+                Uri uri = Uri.parse(url);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                context.startActivity(intent);
 
             }
         });
@@ -89,10 +93,10 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
         if (row_index == position) {
             Log.d(TAG, row_index + "");
             Log.d(TAG, position + "");
-            holder.videoRow.setBackgroundColor(Color.parseColor("#aaafff"));
+//            holder.videoRow.setBackgroundColor(Color.parseColor("#aaafff"));
 
         } else {
-            holder.videoRow.setBackgroundColor(Color.parseColor("#ffffff"));
+//            holder.videoRow.setBackgroundColor(Color.parseColor("#ffffff"));
         }
 
     }
@@ -119,16 +123,13 @@ class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapter.ViewH
 
         public ViewHolder(View itemView) {
             super(itemView);
-            row = itemView.findViewById(R.id.videoRow);
-            videoName = itemView.findViewById(R.id.video_name);
-            videoId = itemView.findViewById(R.id.video_id);
-            videoDescription = itemView.findViewById(R.id.video_description);
-            videoUrl = itemView.findViewById(R.id.video_url);
+            row = itemView.findViewById(R.id.cat_videoRow);
+            videoName = itemView.findViewById(R.id.cat_video_name);
+            videoId = itemView.findViewById(R.id.cat_video_id);
+            videoDescription = itemView.findViewById(R.id.cat_video_description);
+            videoUrl = itemView.findViewById(R.id.cat_video_url);
             //videoName.setOnClickListener(this);
-            videoRow = itemView.findViewById(R.id.videorow2);
-            commentButton = itemView.findViewById(R.id.viewCommentsButton);
-
-
+            videoRow = itemView.findViewById(R.id.cat_videorow2);
         }
 
 

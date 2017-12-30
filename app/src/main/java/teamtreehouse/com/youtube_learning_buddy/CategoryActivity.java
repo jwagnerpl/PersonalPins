@@ -10,10 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -28,29 +26,29 @@ public class CategoryActivity extends AppCompatActivity {
     FloatingActionButton fab;
     private RecyclerView.Adapter mAdapter;
     private String fk;
+    String categoryName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        categoryName = getIntent().getStringExtra("CATEGORY_NAME");
+
+        AppDatabase db = new Utils().createDatabase(CategoryActivity.this);
+        final int fk = db.categoryDao().getCategoryId(categoryName);
+        getSupportActionBar().setTitle(categoryName);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         YoutubeApiCall api = new YoutubeApiCall();
 
         context = getApplicationContext();
         recyclerView = findViewById(R.id.categoryRecycler);
 
-
-        final AppDatabase db = Room.databaseBuilder(getApplicationContext(), AppDatabase.class, "production")
-                .allowMainThreadQueries()
-                .fallbackToDestructiveMigration()
-                .build();
-
-        List<YoutubeVideo> videos = db.youtubeVideoDao().getAllMovies(fk);
+        List<YoutubeVideo> videos = db.youtubeVideoDao().getAllMovies(fk + "");
+        Log.d(TAG, videos.toString());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        YoutubeVideoAdapter mAdapter = new YoutubeVideoAdapter(videos, CategoryActivity.this);
+        CategoryVideoAdapter mAdapter = new CategoryVideoAdapter(videos, CategoryActivity.this);
         mAdapter.setVideos(videos);
 
 ////        ItemTouchHelperAdapter adapter;
@@ -73,17 +71,11 @@ public class CategoryActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
             @Override
             public void onClick(View view) {
-                view.setScaleX(2);
-                view.setScaleY(2);
-                view.animate()
-                        .scaleX(0).scaleY(0).setDuration(750)
-                        .withEndAction(new Runnable() {
-                            @Override
-                            public void run() {
-                                startActivity(new Intent(CategoryActivity.this, SearchVideos.class));
-                            }
-                        })
-                        .start();
+                Intent intent = new Intent(CategoryActivity.this, SearchVideosActivity.class);
+                intent.putExtra("CATEGORY_ID", fk+"");
+                intent.putExtra("CATEGORY_NAME", categoryName);
+                startActivity(intent);
+
             }
         });
 
