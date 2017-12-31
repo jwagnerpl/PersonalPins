@@ -5,30 +5,17 @@
     android:id="@+id/videoRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/colorAccent"
-    android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/video_id"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/video_url"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="12dp"
-        android:textSize="24sp"
-        android:visibility="gone"
-        tools:text="Sample Category" />
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:padding="5dp">
 
     <LinearLayout
         android:id="@+id/videorow2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
+        android:background="@color/grey"
         android:orientation="horizontal"
+        android:padding="10dp"
         android:weightSum="3">
 
         <TextView

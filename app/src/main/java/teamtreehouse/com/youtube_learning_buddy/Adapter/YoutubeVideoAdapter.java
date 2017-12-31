@@ -126,9 +126,9 @@ public class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapte
             super(itemView);
             row = itemView.findViewById(R.id.videoRow);
             videoName = itemView.findViewById(R.id.video_name);
-            videoId = itemView.findViewById(R.id.video_id);
+
             videoDescription = itemView.findViewById(R.id.video_description);
-            videoUrl = itemView.findViewById(R.id.video_url);
+
             //videoName.setOnClickListener(this);
             videoRow = itemView.findViewById(R.id.videorow2);
             commentButton = itemView.findViewById(R.id.viewCommentsButton);

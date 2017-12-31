@@ -5,30 +5,14 @@
     android:id="@+id/cat_videoRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:background="@color/colorAccent"
     android:orientation="vertical">
-
-    <TextView
-        android:id="@+id/cat_video_id"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone" />
-
-    <TextView
-        android:id="@+id/cat_video_url"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="12dp"
-        android:textSize="24sp"
-        android:visibility="gone"
-        tools:text="Sample Category" />
 
     <LinearLayout
         android:id="@+id/cat_videorow2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_margin="5dp"
+        android:background="@color/grey"
         android:orientation="horizontal"
         android:weightSum="2">
 
@@ -38,8 +22,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:maxLines="2"
             android:textAlignment="center"
             android:textSize="20sp"
             tools:text="Sample Category" />
@@ -50,8 +32,6 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:ellipsize="marquee"
-            android:maxLines="4"
             android:textAlignment="center"
             android:textSize="14sp"
             tools:text="Sample Category" />

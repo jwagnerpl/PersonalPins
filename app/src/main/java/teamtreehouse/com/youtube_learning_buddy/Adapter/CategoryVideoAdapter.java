@@ -125,9 +125,7 @@ public class CategoryVideoAdapter extends RecyclerView.Adapter<CategoryVideoAdap
             super(itemView);
             row = itemView.findViewById(R.id.cat_videoRow);
             videoName = itemView.findViewById(R.id.cat_video_name);
-            videoId = itemView.findViewById(R.id.cat_video_id);
             videoDescription = itemView.findViewById(R.id.cat_video_description);
-            videoUrl = itemView.findViewById(R.id.cat_video_url);
             //videoName.setOnClickListener(this);
             videoRow = itemView.findViewById(R.id.cat_videorow2);
         }
