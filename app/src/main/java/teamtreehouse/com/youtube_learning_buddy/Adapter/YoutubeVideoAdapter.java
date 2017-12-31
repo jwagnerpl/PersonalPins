@@ -97,7 +97,7 @@ public class YoutubeVideoAdapter extends RecyclerView.Adapter<YoutubeVideoAdapte
             holder.videoRow.setBackgroundColor(Color.parseColor("#aaafff"));
 
         } else {
-            holder.videoRow.setBackgroundColor(Color.parseColor("#ffffff"));
+            holder.videoRow.setBackgroundColor(Color.parseColor("#FFDCDCDC"));
         }
 
     }
