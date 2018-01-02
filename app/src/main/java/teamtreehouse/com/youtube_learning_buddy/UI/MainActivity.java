@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("PinzRfuN");
+        getSupportActionBar().setSubtitle("Boards");
 
         YoutubeApiCall api = new YoutubeApiCall();
 
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(MainActivity.this, "Add a category", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, "Add a Board", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
