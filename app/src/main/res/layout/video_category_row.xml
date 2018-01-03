@@ -2,39 +2,48 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:ellipsize="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/cat_videoRow"
+    android:id="@+id/photoRow"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_gravity="center"
+    android:orientation="horizontal">
 
     <LinearLayout
-        android:id="@+id/cat_videorow2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="5dp"
-        android:background="@color/grey"
-        android:orientation="horizontal"
-        android:weightSum="2">
+        android:layout_gravity="center_horizontal"
+        android:orientation="vertical">
 
         <TextView
-            android:id="@+id/cat_video_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_weight="1"
-            android:textAlignment="center"
-            android:textSize="20sp"
-            tools:text="Sample Category" />
+                android:id="@+id/photo_tags"
+                android:layout_width="wrap_content"
+                android:ellipsize="end"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:maxLines="1"
+                tools:text="test" />
+
+        <ImageView
+                android:id="@+id/photo_imageView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_gravity="center_horizontal"
+                android:adjustViewBounds="true"
+                android:src="@drawable/ic_add_black_24dp" />
 
         <TextView
-            android:id="@+id/cat_video_description"
-            android:layout_width="match_parent"
+            android:id="@+id/photo_comments"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:ellipsize="end"
             android:layout_gravity="center"
-            android:layout_weight="1"
+            android:maxLines="1"
+            android:text="hello from the other @android:string/fingerprint_icon_content_description"
             android:textAlignment="center"
             android:textSize="14sp"
-            tools:text="Sample Category" />
+            android:visibility="visible" />
 
     </LinearLayout>
 

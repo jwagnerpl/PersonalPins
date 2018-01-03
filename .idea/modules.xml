@@ -2,11 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/PersonalPins.iml" filepath="$PROJECT_DIR$/PersonalPins.iml" />
       <module fileurl="file://$PROJECT_DIR$/ToDoList.iml" filepath="$PROJECT_DIR$/ToDoList.iml" />
       <module fileurl="file://$PROJECT_DIR$/YoutubeLearningBuddy.iml" filepath="$PROJECT_DIR$/YoutubeLearningBuddy.iml" />
-      <module fileurl="file://$PROJECT_DIR$/YoutubeLearningBuddy.iml" filepath="$PROJECT_DIR$/YoutubeLearningBuddy.iml" />
       <module fileurl="file://$PROJECT_DIR$/YoutubeLearningBuddy3.iml" filepath="$PROJECT_DIR$/YoutubeLearningBuddy3.iml" />
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

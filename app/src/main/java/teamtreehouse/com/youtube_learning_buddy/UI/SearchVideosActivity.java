@@ -22,7 +22,7 @@ import java.util.ArrayList;
 
 import teamtreehouse.com.youtube_learning_buddy.Database.AppDatabase;
 import teamtreehouse.com.youtube_learning_buddy.R;
-import teamtreehouse.com.youtube_learning_buddy.Utils.Utils;
+import teamtreehouse.com.youtube_learning_buddy.Utilities.Utils;
 import teamtreehouse.com.youtube_learning_buddy.API.YoutubeApiCall;
 import teamtreehouse.com.youtube_learning_buddy.Model.YoutubeVideo;
 

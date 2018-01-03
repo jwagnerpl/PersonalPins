@@ -9,7 +9,7 @@ public class Video {
     @PrimaryKey(autoGenerate = true)
     private int id;
 
-    @ColumnInfo(name = "videoName")
+    @ColumnInfo(name = "tags")
     private String videoName;
 
     @ColumnInfo(name = "videoOrder")

@@ -7,4 +7,7 @@
     <string name="save_category">Save Category</string>
     <string name="search_for_a_video">Search for a title</string>
     <string name="search_button_text">Search</string>
+    <string name="enter_tags_separate_by_comma">Enter tags, separate by comma.</string>
+    <string name="enter_your_comments_here">Enter your comments here.</string>
+    <string name="add_to_board">Add to Board</string>
 </resources>
