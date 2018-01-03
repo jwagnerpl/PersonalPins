@@ -33,8 +33,9 @@
             android:parentActivityName=".UI.MainActivity" />
         <activity
             android:name=".UI.CategoryActivity"
-            android:parentActivityName=".UI.MainActivity"></activity>
-        <activity android:name=".UI.AddPhotoPinActivity"></activity>
+            android:parentActivityName=".UI.MainActivity" />
+        <activity android:name=".UI.AddPhotoPinActivity" />
+        <activity android:name=".UI.DisplayImageActivity"></activity>
     </application>
 
 </manifest>

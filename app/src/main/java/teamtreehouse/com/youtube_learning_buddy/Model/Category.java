@@ -15,12 +15,23 @@ public class Category {
     @ColumnInfo(name = "categoryOrder")
     private int categoryOrder;
 
+    @ColumnInfo(name = "coverPhoto")
+    private String coverPhoto;
+
     public String getCategoryName() {
         return categoryName;
     }
 
     public void setCategoryName(String categoryName) {
         this.categoryName = categoryName;
+    }
+
+    public String getCoverPhoto() {
+        return coverPhoto;
+    }
+
+    public void setCoverPhoto(String coverPhoto) {
+        this.coverPhoto = coverPhoto;
     }
 
     public int getId() {

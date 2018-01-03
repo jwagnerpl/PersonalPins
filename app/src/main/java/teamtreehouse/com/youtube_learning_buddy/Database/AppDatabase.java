@@ -7,7 +7,7 @@ import teamtreehouse.com.youtube_learning_buddy.Model.Category;
 import teamtreehouse.com.youtube_learning_buddy.Model.Photo;
 import teamtreehouse.com.youtube_learning_buddy.Model.YoutubeVideo;
 
-@Database(entities = {Category.class, YoutubeVideo.class, Photo.class}, version = 6)
+@Database(entities = {Category.class, YoutubeVideo.class, Photo.class}, version = 7)
 public abstract class AppDatabase extends RoomDatabase {
     public abstract CategoryDao categoryDao();
     public abstract YoutubeVideoDao youtubeVideoDao();

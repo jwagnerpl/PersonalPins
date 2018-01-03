@@ -16,6 +16,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import java.io.File;
@@ -26,6 +27,7 @@ import java.util.List;
 
 import teamtreehouse.com.youtube_learning_buddy.Adapter.CategoryPhotoAdapter;
 import teamtreehouse.com.youtube_learning_buddy.Database.AppDatabase;
+import teamtreehouse.com.youtube_learning_buddy.Model.Category;
 import teamtreehouse.com.youtube_learning_buddy.Model.Photo;
 import teamtreehouse.com.youtube_learning_buddy.R;
 import teamtreehouse.com.youtube_learning_buddy.Utilities.Utils;
@@ -34,7 +36,7 @@ import teamtreehouse.com.youtube_learning_buddy.API.YoutubeApiCall;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_IMAGE;
 import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 
-public class CategoryActivity extends AppCompatActivity {
+public class CategoryActivity extends AppCompatActivity implements CategoryPhotoAdapter.ItemClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 0;
     public static Context context;
@@ -46,6 +48,7 @@ public class CategoryActivity extends AppCompatActivity {
     String categoryName;
     Uri mediaUri;
     public static int fk;
+    CategoryPhotoAdapter mAdapter;
 
 
     @Override
@@ -70,14 +73,20 @@ public class CategoryActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.categoryRecycler);
 
         List<Photo> photos = db.photoDao().getAllPhotosFromBoard(fk + "");
-        Log.d(TAG, photos.toString());
+        if(photos.size() != 0 && db.categoryDao().getCategory(fk).getCoverPhoto() == null){
+            String uri = photos.get(0).getPhotoUri();
+            Category category = db.categoryDao().getCategory(fk);
+            category.setCoverPhoto(uri);
+            db.categoryDao().updateAlbumCover(category);
+        }
         int columns = Utils.calculateNoOfColumns(CategoryActivity.this);
         float marginSpace = Utils.setGridMargins(CategoryActivity.this, columns);
 //        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
 //        Log.d(TAG, "margin is " + marginSpace);
 //        marginLayoutParams.setMargins((int)marginSpace, 0, (int)marginSpace, 0);
         recyclerView.setLayoutManager(new GridLayoutManager(this, columns));
-        CategoryPhotoAdapter mAdapter = new CategoryPhotoAdapter(photos, CategoryActivity.this);
+        mAdapter = new CategoryPhotoAdapter(photos, CategoryActivity.this);
+        mAdapter.setClickListener(this);
         mAdapter.setPhotos(photos);
 
         recyclerView.setAdapter(mAdapter);
@@ -196,6 +205,14 @@ public class CategoryActivity extends AppCompatActivity {
             addVideoFab.setVisibility(View.VISIBLE);
             addPhotoFab.setVisibility(View.VISIBLE);
         }
+    }
+
+    @Override
+    public void onItemClick(View view, int position) {
+        Photo photo = mAdapter.getItem(position);
+        Intent intent = new Intent(CategoryActivity.this, DisplayImageActivity.class);
+        intent.putExtra("URI", photo.getPhotoUri());
+        startActivity(intent);
     }
 }
 

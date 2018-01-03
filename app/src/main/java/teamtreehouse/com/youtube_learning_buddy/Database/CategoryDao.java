@@ -36,4 +36,6 @@ public interface CategoryDao {
     @Delete
     void delete(Category... categories);
 
+    @Update
+    void updateAlbumCover(Category... categories);
 }

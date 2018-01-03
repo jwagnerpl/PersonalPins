@@ -3,6 +3,7 @@ package teamtreehouse.com.youtube_learning_buddy.Adapter;
 import android.arch.persistence.room.Room;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.widget.RecyclerView;
@@ -11,8 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +35,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
     List<YoutubeVideo> videos;
     LinearLayout row;
     Context context;
+    int id;
+    String coverPhotoUri;
 
     private static final String TAG = "CategoryAdapter";
     final AppDatabase db = Room.databaseBuilder(MainActivity.context, AppDatabase.class, "production")
@@ -94,11 +100,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(CategoryAdapter.ViewHolder holder, int position) {
+        coverPhotoUri = categories.get(position).getCoverPhoto();
+        if(coverPhotoUri != null){
+            Picasso.with(context).load(Uri.parse(coverPhotoUri)).into(holder.albumCover);
+        }
+        //holder.
         holder.categoryName.setText(categories.get(position).getCategoryName());
         Log.d(TAG, categories.get(position).getCategoryOrder() + "");
         int categoryId = categories.get(position).getId();
-        holder.imageButton.setTag(R.string.category_id, categoryId);
-        holder.imageButton.setTag(R.string.position, position);
+        //holder.imageButton.setTag(R.string.category_id, categoryId);
+        //holder.imageButton.setTag(R.string.position, position);
     }
 
     @Override
@@ -116,14 +127,16 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         public TextView categoryName;
         public ImageButton imageButton;
         public TextView categoryId;
+        public ImageView albumCover;
 
         public ViewHolder(View itemView) {
             super(itemView);
             row = itemView.findViewById(R.id.row);
             categoryName = itemView.findViewById(R.id.category_name);
-            categoryId = itemView.findViewById(R.id.category_id);
-            imageButton = itemView.findViewById(R.id.delete);
-            imageButton.setOnClickListener(this);
+            albumCover = itemView.findViewById(R.id.albumCover);
+
+//            imageButton = itemView.findViewById(R.id.delete);
+//            imageButton.setOnClickListener(this);
             categoryName.setOnClickListener(this);
         }
 

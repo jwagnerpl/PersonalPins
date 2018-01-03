@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -32,6 +33,7 @@ public class CategoryPhotoAdapter extends RecyclerView.Adapter<CategoryPhotoAdap
     private int row_index = -1;
     ProgressBar pb;
     Uri photoUri;
+    private ItemClickListener itemClickListener;
 
     private static final String TAG = "CategoryAdapter";
     final AppDatabase db = Room.databaseBuilder(MainActivity.context, AppDatabase.class, "production")
@@ -107,7 +109,7 @@ public class CategoryPhotoAdapter extends RecyclerView.Adapter<CategoryPhotoAdap
         return photos.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public TextView tags;
         public TextView photoComments;
         public LinearLayout photoRow2;
@@ -115,6 +117,7 @@ public class CategoryPhotoAdapter extends RecyclerView.Adapter<CategoryPhotoAdap
 
         public ViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             row = itemView.findViewById(R.id.photoRow);
             tags = itemView.findViewById(R.id.photo_tags);
             photoComments = itemView.findViewById(R.id.photo_comments);
@@ -122,16 +125,23 @@ public class CategoryPhotoAdapter extends RecyclerView.Adapter<CategoryPhotoAdap
         }
 
 
-        @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
         @Override
         public void onClick(View view) {
-
-        }
-
-        @Override
-        public boolean onLongClick(View view) {
-            return false;
+            if(itemClickListener != null){
+                itemClickListener.onItemClick(view, getAdapterPosition());
+            }
         }
     }
 
+    public Photo getItem(int id){
+        return photos.get(id);
+    }
+
+    public void setClickListener(ItemClickListener itemClickListener){
+        this.itemClickListener = itemClickListener;
+    }
+
+    public interface ItemClickListener {
+        void onItemClick(View view, int position);
+    }
 }
