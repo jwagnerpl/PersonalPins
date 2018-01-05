@@ -2,6 +2,8 @@ package teamtreehouse.com.youtube_learning_buddy.UI;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Environment;
 import android.os.StrictMode;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
@@ -30,6 +33,7 @@ import teamtreehouse.com.youtube_learning_buddy.Database.AppDatabase;
 import teamtreehouse.com.youtube_learning_buddy.Model.Category;
 import teamtreehouse.com.youtube_learning_buddy.Model.Photo;
 import teamtreehouse.com.youtube_learning_buddy.R;
+import teamtreehouse.com.youtube_learning_buddy.Utilities.FileHelper;
 import teamtreehouse.com.youtube_learning_buddy.Utilities.Utils;
 import teamtreehouse.com.youtube_learning_buddy.API.YoutubeApiCall;
 
@@ -39,14 +43,21 @@ import static android.provider.MediaStore.Files.FileColumns.MEDIA_TYPE_VIDEO;
 public class CategoryActivity extends AppCompatActivity implements CategoryPhotoAdapter.ItemClickListener {
 
     private static final int REQUEST_TAKE_PHOTO = 0;
+    private static final int REQUEST_TAKE_VIDEO = 1;
+    private static final int REQUEST_PICK_PHOTO = 2;
+    private static final int REQUEST_PICK_VIDEO = 3;
     public static Context context;
     RecyclerView recyclerView;
     private static final String TAG = "MainActivity";
+
     FloatingActionButton addPinFab;
     FloatingActionButton addVideoFab;
     FloatingActionButton addPhotoFab;
+    FloatingActionButton choosePhotoFab;
+    FloatingActionButton chooseVideoFab;
+
     String categoryName;
-    Uri mediaUri;
+    public static Uri mediaUri;
     public static int fk;
     CategoryPhotoAdapter mAdapter;
 
@@ -63,27 +74,18 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
 
         AppDatabase db = new Utils().createDatabase(CategoryActivity.this);
         fk = db.categoryDao().getCategoryId(categoryName);
-        Log.d(TAG, "FK is: " +fk);
+        Log.d(TAG, "FK is: " + fk);
         getSupportActionBar().setTitle(categoryName);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        YoutubeApiCall api = new YoutubeApiCall();
-
-        context = getApplicationContext();
+        context = CategoryActivity.this;
         recyclerView = findViewById(R.id.categoryRecycler);
 
         List<Photo> photos = db.photoDao().getAllPhotosFromBoard(fk + "");
-        if(photos.size() != 0 && db.categoryDao().getCategory(fk).getCoverPhoto() == null){
-            String uri = photos.get(0).getPhotoUri();
-            Category category = db.categoryDao().getCategory(fk);
-            category.setCoverPhoto(uri);
-            db.categoryDao().updateAlbumCover(category);
-        }
+        setDefaultBoardImage(db, photos);
+
         int columns = Utils.calculateNoOfColumns(CategoryActivity.this);
-        float marginSpace = Utils.setGridMargins(CategoryActivity.this, columns);
-//        ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) recyclerView.getLayoutParams();
-//        Log.d(TAG, "margin is " + marginSpace);
-//        marginLayoutParams.setMargins((int)marginSpace, 0, (int)marginSpace, 0);
+
         recyclerView.setLayoutManager(new GridLayoutManager(this, columns));
         mAdapter = new CategoryPhotoAdapter(photos, CategoryActivity.this);
         mAdapter.setClickListener(this);
@@ -94,20 +96,39 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         addPinFab = findViewById(R.id.categoryFab);
         addVideoFab = findViewById(R.id.videoFab);
         addPhotoFab = findViewById(R.id.photoFab);
+        choosePhotoFab = findViewById(R.id.choosePhotoFab);
+        chooseVideoFab = findViewById(R.id.chooseVideoFab);
 
         addPinFab.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View view) {
-                Toast.makeText(CategoryActivity.this, "Add a Youtube video", Toast.LENGTH_LONG).show();
+                Toast.makeText(CategoryActivity.this, "Add a pin", Toast.LENGTH_LONG).show();
                 return true;
             }
         });
-
 
         addPinFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 toggleFabVisibility();
+            }
+        });
+
+        choosePhotoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pickPhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                pickPhotoIntent.setType("image/*");
+                startActivityForResult(pickPhotoIntent, REQUEST_PICK_PHOTO);
+            }
+        });
+
+        chooseVideoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pickVideoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                pickVideoIntent.setType("video/*");
+                startActivityForResult(pickVideoIntent, REQUEST_PICK_VIDEO);
             }
         });
 
@@ -127,6 +148,32 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
             }
         });
 
+        addVideoFab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mediaUri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);
+                if (mediaUri == null) {
+                    Toast.makeText(CategoryActivity.this,
+                            "There was a problem accessing the external storage.",
+                            Toast.LENGTH_LONG).show();
+                } else {
+                    Intent takeVideoIntent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_OUTPUT, mediaUri);
+                    takeVideoIntent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 10);
+                    startActivityForResult(takeVideoIntent, REQUEST_TAKE_VIDEO);
+                }
+            }
+        });
+
+    }
+
+    private void setDefaultBoardImage(AppDatabase db, List<Photo> photos) {
+        if (photos.size() != 0 && db.categoryDao().getCategory(fk).getCoverPhoto() == null) {
+            String uri = photos.get(0).getPhotoUri();
+            Category category = db.categoryDao().getCategory(fk);
+            category.setCoverPhoto(uri);
+            db.categoryDao().updateAlbumCover(category);
+        }
     }
 
     private Uri getOutputMediaFileUri(int mediaType) {
@@ -169,14 +216,41 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
-            if (requestCode == REQUEST_TAKE_PHOTO) {
-                Log.d(TAG, mediaUri.toString());
-                //new Utils().createDatabase(CategoryActivity.this).photoDao().insertAll(new Photo(mediaUri,fk));
+            if (requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_PICK_PHOTO) {
+
+                if(requestCode == REQUEST_PICK_PHOTO){
+                    mediaUri = data.getData();
+                }
+
+                Log.d(TAG, "mediaUri is here" + mediaUri);
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(mediaUri);
+                sendBroadcast(mediaScanIntent);
+
+                Intent intent = new Intent(this, AddPhotoPinActivity.class);
+                intent.putExtra("FK", fk);
+                intent.putExtra("type", "photo");
+                intent.setData(mediaUri);
+                startActivity(intent);
+            }
+
+            else if (requestCode == REQUEST_TAKE_VIDEO || requestCode == REQUEST_PICK_VIDEO) {
+
+                if(requestCode == REQUEST_PICK_VIDEO){
+                    if(data != null){
+                        mediaUri = data.getData();
+                    }
+                }
+
+                Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                mediaScanIntent.setData(mediaUri);
+                sendBroadcast(mediaScanIntent);
+
                 Intent intent = new Intent(this, AddPhotoPinActivity.class);
                 Log.d(TAG, fk + " fk is here in activityresult");
-                intent.putExtra("FK",fk);
+                intent.putExtra("FK", fk);
+                intent.putExtra("type", "video");
                 intent.setData(mediaUri);
                 startActivity(intent);
             }
@@ -185,7 +259,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
             Toast.makeText(CategoryActivity.this,
                     "Sorry, there was an error.", Toast.LENGTH_LONG).show();
         }
-
     }
 
     private boolean isExternalStorageAvailable() {
@@ -201,18 +274,34 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         if (addVideoFab.getVisibility() == View.VISIBLE) {
             addVideoFab.setVisibility(View.INVISIBLE);
             addPhotoFab.setVisibility(View.INVISIBLE);
+            chooseVideoFab.setVisibility(View.INVISIBLE);
+            choosePhotoFab.setVisibility(View.INVISIBLE);
         } else {
             addVideoFab.setVisibility(View.VISIBLE);
             addPhotoFab.setVisibility(View.VISIBLE);
+            chooseVideoFab.setVisibility(View.VISIBLE);
+            choosePhotoFab.setVisibility(View.VISIBLE);
         }
     }
 
     @Override
     public void onItemClick(View view, int position) {
+        Log.d(TAG, view.toString() + "here is the view");
         Photo photo = mAdapter.getItem(position);
-        Intent intent = new Intent(CategoryActivity.this, DisplayImageActivity.class);
-        intent.putExtra("URI", photo.getPhotoUri());
-        startActivity(intent);
+        String path = photo.getPhotoUri();
+        Uri uri = Uri.parse(path);
+
+        if (path.contains(".jpg")) {
+            Intent intent = new Intent(CategoryActivity.this, DisplayImageActivity.class);
+            intent.putExtra("URI", photo.getPhotoUri());
+            startActivity(intent);
+        } else {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(photo.getPhotoUri()));
+            intent.setDataAndType(uri, "video/*");
+            startActivity(intent);
+        }
+
+
     }
 }
 

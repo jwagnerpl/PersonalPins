@@ -22,12 +22,20 @@ public class Photo {
     @ColumnInfo(name = "comments")
     private String comments;
 
-    public Photo(String photoUri, int fkBoardId, String tags, String comments) {
+    @ColumnInfo(name = "title")
+    private String title;
+
+    public Photo(String photoUri, int fkBoardId, String tags, String comments, String title) {
         this.photoUri = photoUri;
         this.fkBoardId = fkBoardId;
         this.tags = tags;
         this.comments = comments;
+        this.title = title;
     }
+
+    public String getTitle() {return title;}
+
+    public void setTitle(String title) {this.title = title;}
 
     public int getId() {
         return id;

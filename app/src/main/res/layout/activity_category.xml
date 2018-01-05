@@ -6,6 +6,29 @@
     android:layout_height="match_parent"
     tools:context="teamtreehouse.com.youtube_learning_buddy.UI.CategoryActivity">
 
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/choosePhotoFab"
+        android:layout_width="wrap_content"
+        android:visibility="invisible"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/photo_library"
+        android:tint="@color/white"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/chooseVideoFab"
+        app:layout_constraintStart_toStartOf="@id/categoryFab" />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/chooseVideoFab"
+        android:visibility="invisible"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:src="@drawable/video_library"
+        android:tint="@color/white"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toTopOf="@id/photoFab"
+        app:layout_constraintStart_toStartOf="@id/categoryFab" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/photoFab"

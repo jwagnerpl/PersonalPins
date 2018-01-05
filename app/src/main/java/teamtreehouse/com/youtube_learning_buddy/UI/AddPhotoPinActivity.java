@@ -1,5 +1,6 @@
 package teamtreehouse.com.youtube_learning_buddy.UI;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,19 +12,21 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
+import teamtreehouse.com.youtube_learning_buddy.Database.AppDatabase;
 import teamtreehouse.com.youtube_learning_buddy.Model.Photo;
 import teamtreehouse.com.youtube_learning_buddy.R;
 import teamtreehouse.com.youtube_learning_buddy.Utilities.FileHelper;
 import teamtreehouse.com.youtube_learning_buddy.Utilities.Utils;
 
+
 public class AddPhotoPinActivity extends AppCompatActivity {
+
     Button submitButton;
     private String tags;
     private String comments;
     ImageView imageView;
     private static final String TAG = "AddPhotoPinActivity";
-
-
+    private String title;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,19 +34,35 @@ public class AddPhotoPinActivity extends AppCompatActivity {
         setContentView(R.layout.activity_add_photo_pin);
 
         imageView = findViewById(R.id.imageView);
-        final Uri mediaUri = getIntent().getData();
+        Intent intent = getIntent();
+        final Uri mediaUri = intent.getData();
+
         final int fk = getIntent().getIntExtra("FK",0);
-        Picasso.with(this).load(mediaUri).into(imageView);
+        final String type = intent.getStringExtra("type");
+        if(type.equals("photo")) {
+            Picasso.with(this).load(mediaUri).into(imageView);
+        }
+        else{
+            Log.d(TAG, mediaUri.toString());
+        }
         submitButton = findViewById(R.id.submitPhotoButton);
         final EditText tagsEditText = findViewById(R.id.tagEditText);
         final EditText commentsEditText = findViewById(R.id.commentEditText);
+        final EditText titleEditText = findViewById(R.id.titleEditText);
 
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 comments = commentsEditText.getText().toString();
                 tags = tagsEditText.getText().toString();
-                new Utils().createDatabase(AddPhotoPinActivity.this).photoDao().insertAll(new Photo(mediaUri.toString(),Integer.valueOf(fk),tags,comments));
+                title = titleEditText.getText().toString();
+                AppDatabase db = new Utils().createDatabase(AddPhotoPinActivity.this);
+                db.photoDao().insertAll(new Photo(mediaUri.toString(),Integer.valueOf(fk),tags,comments,title));
+                String coverPhotoUri = db.categoryDao().getCategory(fk).getCoverPhoto();
+                if (coverPhotoUri == null && type.equals("photo")){
+                    db.categoryDao().getCategory(fk).setCoverPhoto(mediaUri.toString());
+                }
+                startActivity(new Intent(AddPhotoPinActivity.this, MainActivity.class));
             }
         });
     }

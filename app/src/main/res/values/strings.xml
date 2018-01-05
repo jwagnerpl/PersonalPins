@@ -10,4 +10,5 @@
     <string name="enter_tags_separate_by_comma">Enter tags, separate by comma.</string>
     <string name="enter_your_comments_here">Enter your comments here.</string>
     <string name="add_to_board">Add to Board</string>
+    <string name="enter_your_title_here">Enter your title here</string>
 </resources>

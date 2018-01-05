@@ -27,7 +27,7 @@
             android:layout_gravity="center_horizontal"
             android:id="@+id/albumCover"
             android:layout_width="match_parent"
-            android:layout_height="75dp"
+            android:layout_height="175dp"
             android:layout_weight="1"
             android:src="@drawable/ic_photo_camera_black_24dp" />
         <!--

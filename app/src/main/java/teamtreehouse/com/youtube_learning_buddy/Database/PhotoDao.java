@@ -25,4 +25,7 @@ public interface PhotoDao {
 
     @Delete
     void delete(Photo... photos);
+
+    @Update
+    void update(Photo... photos);
 }
