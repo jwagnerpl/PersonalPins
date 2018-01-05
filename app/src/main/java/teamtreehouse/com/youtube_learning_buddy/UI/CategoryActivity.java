@@ -1,29 +1,52 @@
 package teamtreehouse.com.youtube_learning_buddy.UI;
 
+import android.annotation.SuppressLint;
+import android.app.ActivityOptions;
+import android.content.ContentResolver;
+import android.content.ContentUris;
 import android.content.Context;
+import android.content.CursorLoader;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.print.PrintAttributes;
+import android.provider.DocumentsContract;
 import android.provider.MediaStore;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Explode;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
+import org.apache.commons.io.IOUtils;
+
+import java.io.BufferedInputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -48,7 +71,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
     private static final int REQUEST_PICK_VIDEO = 3;
     public static Context context;
     RecyclerView recyclerView;
-    private static final String TAG = "MainActivity";
+    private static final String TAG = "CategoryActivity";
 
     FloatingActionButton addPinFab;
     FloatingActionButton addVideoFab;
@@ -60,10 +83,48 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
     public static Uri mediaUri;
     public static int fk;
     CategoryPhotoAdapter mAdapter;
+    private static boolean selectingCoverImage = false;
+    AppDatabase db = new Utils().createDatabase(CategoryActivity.this);
+    private Menu appMenu;
 
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        MenuItem menuItem = menu.findItem(R.id.setCoverImage);
+        menuItem.getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+        appMenu = menu;
+        return true;
+    }
+
+        private Menu getMenu(){
+            return appMenu;
+    }
+
+
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+            if(item.getItemId() == R.id.setCoverImage ) {
+                Toast.makeText(CategoryActivity.this, "Please select an image", Toast.LENGTH_LONG).show();
+                if (!selectingCoverImage) {
+                    selectingCoverImage = true;
+                    item.getIcon().setColorFilter(getResources().getColor(R.color.selected), PorterDuff.Mode.SRC_ATOP);
+                } else {
+                    selectingCoverImage = false;
+                    item.getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+                }
+            }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+        getWindow().setExitTransition(new Explode());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_category);
 
@@ -72,7 +133,6 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
 
         categoryName = getIntent().getStringExtra("CATEGORY_NAME");
 
-        AppDatabase db = new Utils().createDatabase(CategoryActivity.this);
         fk = db.categoryDao().getCategoryId(categoryName);
         Log.d(TAG, "FK is: " + fk);
         getSupportActionBar().setTitle(categoryName);
@@ -117,8 +177,9 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         choosePhotoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent pickPhotoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent pickPhotoIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 pickPhotoIntent.setType("image/*");
+                pickPhotoIntent.setFlags(Intent.FLAG_GRANT_PERSISTABLE_URI_PERMISSION);
                 startActivityForResult(pickPhotoIntent, REQUEST_PICK_PHOTO);
             }
         });
@@ -126,7 +187,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         chooseVideoFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent pickVideoIntent = new Intent(Intent.ACTION_GET_CONTENT);
+                Intent pickVideoIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
                 pickVideoIntent.setType("video/*");
                 startActivityForResult(pickVideoIntent, REQUEST_PICK_VIDEO);
             }
@@ -219,11 +280,16 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         if (resultCode == RESULT_OK) {
             if (requestCode == REQUEST_TAKE_PHOTO || requestCode == REQUEST_PICK_PHOTO) {
 
-                if(requestCode == REQUEST_PICK_PHOTO){
+                if (requestCode == REQUEST_PICK_PHOTO) {
                     mediaUri = data.getData();
+                    Log.d(TAG,mediaUri.toString());
+                    Uri otherMediaUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+                    byte[] file = FileHelper.getByteArrayFromFile(this, mediaUri);
+                    FileHelper.getFileName(this, otherMediaUri, "image");
+
+                    if(mediaUri.toString().contains("content")){mediaUri = Uri.parse(mediaUri.toString());}
                 }
 
-                Log.d(TAG, "mediaUri is here" + mediaUri);
                 Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
                 mediaScanIntent.setData(mediaUri);
                 sendBroadcast(mediaScanIntent);
@@ -233,12 +299,10 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
                 intent.putExtra("type", "photo");
                 intent.setData(mediaUri);
                 startActivity(intent);
-            }
+            } else if (requestCode == REQUEST_TAKE_VIDEO || requestCode == REQUEST_PICK_VIDEO) {
 
-            else if (requestCode == REQUEST_TAKE_VIDEO || requestCode == REQUEST_PICK_VIDEO) {
-
-                if(requestCode == REQUEST_PICK_VIDEO){
-                    if(data != null){
+                if (requestCode == REQUEST_PICK_VIDEO) {
+                    if (data != null) {
                         mediaUri = data.getData();
                     }
                 }
@@ -284,6 +348,7 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     @Override
     public void onItemClick(View view, int position) {
         Log.d(TAG, view.toString() + "here is the view");
@@ -291,17 +356,102 @@ public class CategoryActivity extends AppCompatActivity implements CategoryPhoto
         String path = photo.getPhotoUri();
         Uri uri = Uri.parse(path);
 
-        if (path.contains(".jpg")) {
-            Intent intent = new Intent(CategoryActivity.this, DisplayImageActivity.class);
-            intent.putExtra("URI", photo.getPhotoUri());
-            startActivity(intent);
+        if (!selectingCoverImage) {
+            Log.d(TAG, uri.toString());
+            if (path.contains(".jpg") || path.contains("image")) {
+
+                Intent intent = new Intent(CategoryActivity.this, DisplayImageActivity.class);
+                intent.setData(uri);
+                intent.putExtra("URI", photo.getPhotoUri());
+                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle());
+            } else if(path.contains(".mp4") || path.contains("video")) {
+                VideoView vv = view.findViewById(R.id.videoView);
+                if (vv.isPlaying() == false) {
+                    vv.start();
+                } else {
+                    vv.stopPlayback();
+                }
+            }
+
         } else {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(photo.getPhotoUri()));
-            intent.setDataAndType(uri, "video/*");
-            startActivity(intent);
+            MenuItem menuItem  = getMenu().findItem(R.id.setCoverImage);
+            menuItem.getIcon().setColorFilter(getResources().getColor(R.color.white), PorterDuff.Mode.SRC_ATOP);
+            selectingCoverImage = false;
+
+            if (uri.toString().contains("jpg")) {
+                Category category = db.categoryDao().getCategory(photo.getFkBoardId());
+                category.setCoverPhoto(uri.toString());
+                db.categoryDao().updateAlbumCover(category);
+                Toast.makeText(CategoryActivity.this, "Your cover photo has been updated", Toast.LENGTH_LONG).show();
+
+            } else {
+                Toast.makeText(CategoryActivity.this, "Sorry bro, looks like that's not an image. Pleez try again.", Toast.LENGTH_LONG).show();
+            }
         }
 
-
     }
-}
+    @SuppressLint("NewApi")
+    public static String getFilePath(Context context, Uri uri) throws URISyntaxException {
+        String selection = null;
+        String[] selectionArgs = null;
+        // Uri is different in versions after KITKAT (Android 4.4), we need to
+        if (Build.VERSION.SDK_INT >= 19 && DocumentsContract.isDocumentUri(context.getApplicationContext(), uri)) {
+            if (isExternalStorageDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                return Environment.getExternalStorageDirectory() + "/" + split[1];
+            } else if (isDownloadsDocument(uri)) {
+                final String id = DocumentsContract.getDocumentId(uri);
+                uri = ContentUris.withAppendedId(
+                        Uri.parse("content://downloads/public_downloads"), Long.valueOf(id));
+            } else if (isMediaDocument(uri)) {
+                final String docId = DocumentsContract.getDocumentId(uri);
+                final String[] split = docId.split(":");
+                final String type = split[0];
+                if ("image".equals(type)) {
+                    uri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                } else if ("video".equals(type)) {
+                    uri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
+                } else if ("audio".equals(type)) {
+                    uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
+                }
+                selection = "_id=?";
+                selectionArgs = new String[]{
+                        split[1]
+                };
+            }
+        }
+        if ("content".equalsIgnoreCase(uri.getScheme())) {
+            String[] projection = {
+                    MediaStore.Images.Media.DATA
+            };
+            Cursor cursor = null;
+            try {
+                cursor = context.getContentResolver()
+                        .query(uri, projection, selection, selectionArgs, null);
+                int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+                if (cursor.moveToFirst()) {
+                    return cursor.getString(column_index);
+                }
+            } catch (Exception e) {
+            }
+        } else if ("file".equalsIgnoreCase(uri.getScheme())) {
+            return uri.getPath();
+        }
+        return null;
+    }
+
+    public static boolean isExternalStorageDocument(Uri uri) {
+        return "com.android.externalstorage.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
+    public static boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+    }
+
 

@@ -125,7 +125,6 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnLongClickListener, View.OnClickListener {
         public TextView categoryName;
-        public ImageButton imageButton;
         public TextView categoryId;
         public ImageView albumCover;
 
@@ -134,10 +133,8 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
             row = itemView.findViewById(R.id.row);
             categoryName = itemView.findViewById(R.id.category_name);
             albumCover = itemView.findViewById(R.id.albumCover);
-
-//            imageButton = itemView.findViewById(R.id.delete);
-//            imageButton.setOnClickListener(this);
             categoryName.setOnClickListener(this);
+            albumCover.setOnClickListener(this);
         }
 
 
@@ -145,26 +142,26 @@ public class CategoryAdapter extends RecyclerView.Adapter<CategoryAdapter.ViewHo
         @Override
         public void onClick(View view) {
 
-            if (view == categoryName) {
+            if (view == albumCover ||view == categoryName) {
                 Log.d(TAG, view.toString());
                 Intent intent = new Intent(context, CategoryActivity.class);
                 intent.putExtra("CATEGORY_NAME", categoryName.getText().toString());
                 context.startActivity(intent);
             }
 
-            if (view == imageButton) {
-
-                int categoryId = (int) view.getTag(R.string.category_id);
-                final int categoryPosition = (int) view.getTag(R.string.position);
-                Log.d(TAG, categoryPosition + "");
-
-                Category category = db.categoryDao().getCategory(categoryId);
-                db.categoryDao().delete(category);
-                categories.remove(categoryPosition);
-
-                notifyDataSetChanged();
-
-            }
+//            if (view == imageButton) {
+//
+//                int categoryId = (int) view.getTag(R.string.category_id);
+//                final int categoryPosition = (int) view.getTag(R.string.position);
+//                Log.d(TAG, categoryPosition + "");
+//
+//                Category category = db.categoryDao().getCategory(categoryId);
+//                db.categoryDao().delete(category);
+//                categories.remove(categoryPosition);
+//
+//                notifyDataSetChanged();
+//
+//            }
         }
 
         @Override

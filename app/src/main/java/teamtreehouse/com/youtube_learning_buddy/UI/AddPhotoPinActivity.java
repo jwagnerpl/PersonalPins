@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -37,12 +38,15 @@ public class AddPhotoPinActivity extends AppCompatActivity {
         Intent intent = getIntent();
         final Uri mediaUri = intent.getData();
 
-        final int fk = getIntent().getIntExtra("FK",0);
-        final String type = intent.getStringExtra("type");
-        if(type.equals("photo")) {
-            Picasso.with(this).load(mediaUri).into(imageView);
+        if (!mediaUri.toString().contains("jpg")) {
+            findViewById(R.id.imageView).setVisibility(View.GONE);
         }
-        else{
+
+        final int fk = getIntent().getIntExtra("FK", 0);
+        final String type = intent.getStringExtra("type");
+        if (type.equals("photo")) {
+            Picasso.with(this).load(mediaUri).into(imageView);
+        } else {
             Log.d(TAG, mediaUri.toString());
         }
         submitButton = findViewById(R.id.submitPhotoButton);
@@ -53,16 +57,21 @@ public class AddPhotoPinActivity extends AppCompatActivity {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                comments = commentsEditText.getText().toString();
-                tags = tagsEditText.getText().toString();
-                title = titleEditText.getText().toString();
-                AppDatabase db = new Utils().createDatabase(AddPhotoPinActivity.this);
-                db.photoDao().insertAll(new Photo(mediaUri.toString(),Integer.valueOf(fk),tags,comments,title));
-                String coverPhotoUri = db.categoryDao().getCategory(fk).getCoverPhoto();
-                if (coverPhotoUri == null && type.equals("photo")){
-                    db.categoryDao().getCategory(fk).setCoverPhoto(mediaUri.toString());
+
+                if (!titleEditText.getText().toString().matches("")) {
+                    comments = commentsEditText.getText().toString();
+                    tags = tagsEditText.getText().toString();
+                    title = titleEditText.getText().toString();
+                    AppDatabase db = new Utils().createDatabase(AddPhotoPinActivity.this);
+                    db.photoDao().insertAll(new Photo(mediaUri.toString(), Integer.valueOf(fk), tags, comments, title));
+                    String coverPhotoUri = db.categoryDao().getCategory(fk).getCoverPhoto();
+                    if (coverPhotoUri == null && type.equals("photo")) {
+                        db.categoryDao().getCategory(fk).setCoverPhoto(mediaUri.toString());
+                    }
+                    startActivity(new Intent(AddPhotoPinActivity.this, MainActivity.class));
+                } else {
+                    Toast.makeText(AddPhotoPinActivity.this, "Sorry, please enter a title first.", Toast.LENGTH_LONG).show();
                 }
-                startActivity(new Intent(AddPhotoPinActivity.this, MainActivity.class));
             }
         });
     }

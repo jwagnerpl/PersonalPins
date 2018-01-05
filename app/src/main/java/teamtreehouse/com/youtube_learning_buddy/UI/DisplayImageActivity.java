@@ -16,7 +16,7 @@ public class DisplayImageActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getSupportActionBar().hide();
         setContentView(R.layout.activity_display_image);
-        Uri uri = Uri.parse(getIntent().getStringExtra("URI"));
+        Uri uri = getIntent().getData();
         ImageView imageView = findViewById(R.id.fullSizeImageView);
 
         Picasso.with(this).load(uri).fit().into(imageView);

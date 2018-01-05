@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="teamtreehouse.com.youtube_learning_buddy.teamtreehouse.com.youtube_learning_buddy.MainActivity">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/setCoverImage"
+        android:icon="@drawable/photo_library"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
-        app:showAsAction="never" />
+        android:title="Set cover image"
+        app:showAsAction="never|always" />
 </menu>
